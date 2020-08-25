@@ -1,0 +1,19 @@
+{
+    "name": "log/seaslog",
+    "description": "seaslog 日志",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "xy",
+            "email": "xyismy@gmail.com"
+        }
+    ],
+    "require": {
+        "php":">=7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "logger\\": "src/"
+        }
+    }
+}
