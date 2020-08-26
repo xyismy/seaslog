@@ -1,6 +1,6 @@
 <?php
 
-namespace seaslog\src;
+namespace src;
 
 use Seaslog;
 
