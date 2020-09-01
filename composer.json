@@ -9,7 +9,8 @@
         }
     ],
     "require": {
-        "php":">=7.0"
+        "php":">=7.0",
+        "phpunit/phpunit": "8.5.*"
     },
     "autoload": {
         "psr-4": {

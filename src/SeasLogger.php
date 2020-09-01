@@ -1,6 +1,6 @@
 <?php
 
-namespace src;
+namespace logger;
 
 use Seaslog;
 
@@ -11,17 +11,17 @@ class SeasLogger
     protected $logDebugPath;
 
     //配置检查
-    public function __invoke()
+    public function __construct()
     {
-        if( empty(getenv('APP_NAME')) ){
+        if( empty(env('APP_NAME')) ){
             throw new \SeasLogException('APP_NAME config error');
         }
 
-        if( empty(getenv('LOG_ADDRESS')) ){
+        if( empty(env('LOG_ADDRESS')) ){
             throw new \SeasLogException('LOG_ADDRESS config error');
         }
 
-        if( empty(getenv('LOG_DEBUG_ADDRESS')) ){
+        if( empty(env('LOG_DEBUG_ADDRESS')) ){
             throw new \SeasLogException('LOG_DEBUG_ADDRESS config error');
         }
 
@@ -79,11 +79,18 @@ class SeasLogger
     }
 
     /**
-     * 清除资源句柄，释放文件
+     * cli 模式下 op清除资源句柄，释放文件
+     * @param string $fileName
      */
-    public function clearStream()
+    public function clearStream($fileName='')
     {
-        SeasLog::closeLoggerStream();
+        if( php_sapi_name() == 'cli' ){
+            if( empty($fileName) ){
+                SeasLog::closeLoggerStream(SEASLOG_CLOSE_LOGGER_STREAM_MOD_ALL);
+            }else{
+                SeasLog::closeLoggerStream(SEASLOG_CLOSE_LOGGER_STREAM_MOD_ASSIGN, $fileName);
+            }
+        }
     }
 
     /**
@@ -155,6 +162,10 @@ class SeasLogger
         $fileName = $this->fileName($fileName, $module);
         $logContent = $this->logInfo($key,$level,$module,$content);
 
-        return SeasLog::log($fileName, $logContent);
+        $pushResult = SeasLog::log($fileName, $logContent);
+        //清楚句柄
+        $this->clearStream($fileName);
+
+        return $pushResult;
     }
 }
